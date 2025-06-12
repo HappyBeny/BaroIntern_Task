@@ -3,7 +3,7 @@ package com.example.intern_task.member.dto.response;
 import com.example.intern_task.member.entity.Member;
 import com.example.intern_task.member.entity.UserRole;
 
-public record MemberSignUpResponse(
+public record SignUpResponse(
         Long id,
         String userName,
         String nickname,
@@ -12,8 +12,8 @@ public record MemberSignUpResponse(
         UserRole userRole
 ) {
 
-    public static MemberSignUpResponse from(Member member) {
-        return new MemberSignUpResponse(
+    public static SignUpResponse from(Member member) {
+        return new SignUpResponse(
                 member.getId(),
                 member.getUsername(),
                 member.getNickname(),

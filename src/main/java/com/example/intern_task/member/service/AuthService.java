@@ -2,7 +2,7 @@ package com.example.intern_task.member.service;
 
 import com.example.intern_task.member.dto.request.SignUpRequest;
 import com.example.intern_task.member.dto.request.SignInRequest;
-import com.example.intern_task.member.dto.response.MemberSignUpResponse;
+import com.example.intern_task.member.dto.response.SignUpResponse;
 import com.example.intern_task.member.dto.response.SignInResponse;
 import com.example.intern_task.member.entity.Member;
 import com.example.intern_task.member.repository.MemberRepository;
@@ -19,7 +19,7 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public MemberSignUpResponse signUp(SignUpRequest request) {
+    public SignUpResponse signUp(SignUpRequest request) {
         validateDuplicatedMember(request);
         String encodedPassword = passwordEncoder.encode(request.password());
 
@@ -27,7 +27,7 @@ public class AuthService {
         member.setEncodedPassword(encodedPassword);
 
         memberRepository.save(member);
-        return MemberSignUpResponse.from(member);
+        return SignUpResponse.from(member);
     }
 
     public SignInResponse signIn(SignInRequest request) {
