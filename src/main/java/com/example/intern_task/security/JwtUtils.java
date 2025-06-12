@@ -48,7 +48,11 @@ public class JwtUtils {
     public boolean validateToken(String authHeader) {
         try {
             String token = authHeader.replace(BEARER_PREFIX, "");
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            Key key = getSigningKey();
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
             throw new RuntimeException("Invalid JWT token");

@@ -1,7 +1,9 @@
 package com.example.intern_task.security;
 
+import com.example.intern_task.member.repository.MemberRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -16,15 +18,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private final JwtUtils jwtUtils;
     private final UserDetailsService userDetailsService;
+    private final MemberRepository memberRepository;
 
-    public SecurityConfig(JwtUtils jwtUtils, UserDetailsService userDetailsService) {
+    public SecurityConfig(JwtUtils jwtUtils, UserDetailsService userDetailsService, MemberRepository memberRepository) {
         this.jwtUtils = jwtUtils;
         this.userDetailsService = userDetailsService;
+        this.memberRepository = memberRepository;
     }
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(jwtUtils, userDetailsService);
+        return new JwtAuthenticationFilter(jwtUtils, userDetailsService, memberRepository);
     }
 
     @Bean
@@ -32,10 +36,8 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(
-                                "/auth/sign-up",
-                                "/auth/sign-in"
-                        ).permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/sign-up")
+                        .permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
