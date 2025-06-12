@@ -35,7 +35,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (jwtUtils.validateToken(header)) {
                 Long memberId = jwtUtils.getMemberId(header);
 
-                // memberId로 Member를 찾아서 email을 가져온 후 UserDetailsService 호출
                 Member member = memberRepository.findById(memberId).orElse(null);
                 if (member != null) {
                     UserDetails userDetails = userDetailsService.loadUserByUsername(member.getEmail());

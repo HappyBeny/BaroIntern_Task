@@ -25,13 +25,14 @@ public class Member extends BaseEntity {
     UserRole userRole;
 
 
-    private Member(String username, String password, String phoneNumber, String nickname, String email) {
+    private Member(String username, String password, String phoneNumber, String nickname, String email, UserRole userRole) {
         this.username = username;
         this.password = password;
         this.phoneNumber = phoneNumber;
         this.nickname = nickname;
         this.email = email;
-        userRole = UserRole.USER;
+        this.userRole = userRole;
+
     }
 
     public static Member from (SignUpRequest request) {
@@ -40,8 +41,24 @@ public class Member extends BaseEntity {
                 request.password(),
                 request.phoneNumber(),
                 request.nickname(),
-                request.email()
+                request.email(),
+                UserRole.USER
         );
+    }
+
+    public static Member adminFrom (SignUpRequest request) {
+        return new Member(
+                request.userName(),
+                request.password(),
+                request.phoneNumber(),
+                request.nickname(),
+                request.email(),
+                UserRole.ADMIN
+        );
+    }
+
+    public void setUserRole (UserRole userRole) {
+        this.userRole = userRole;
     }
 
     public void setEncodedPassword(String encodedPassword) {

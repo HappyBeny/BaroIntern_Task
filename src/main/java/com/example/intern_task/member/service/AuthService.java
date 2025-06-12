@@ -1,5 +1,6 @@
 package com.example.intern_task.member.service;
 
+import com.example.intern_task.common.exception.DuplicateMemberException;
 import com.example.intern_task.member.dto.request.SignUpRequest;
 import com.example.intern_task.member.dto.request.SignInRequest;
 import com.example.intern_task.member.dto.response.SignUpResponse;
@@ -39,8 +40,19 @@ public class AuthService {
         return SignUpResponse.from(member);
     }
 
+    @Transactional
+    public SignUpResponse signUpAsAdmin(SignUpRequest request) {
+        validateDuplicatedMember(request);
+
+        Member admin = Member.adminFrom(request);
+        admin.setEncodedPassword(passwordEncoder.encode(request.password()));
+
+        memberRepository.save(admin);
+        return SignUpResponse.from(admin);
+    }
+
+
     public SignInResponse signIn(SignInRequest request) {
-        // 1) 인증
         Authentication authentication = authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.email(),
@@ -49,26 +61,23 @@ public class AuthService {
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        // 2) DB 조회로 ID·권한 가져오기
         String email = authentication.getName();
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
         Long memberId = member.getId();
         UserRole role = member.getUserRole();
 
-        // 3) JWT 발급
         String token = jwtUtils.createToken(memberId, role);
 
-        // 4) 응답 DTO 반환
         return new SignInResponse(token);
     }
 
     private void validateDuplicatedMember(SignUpRequest request) {
         if (memberRepository.existsByEmail(request.email())) {
-            throw new RuntimeException("");
+            throw new DuplicateMemberException("이미 존재하는 이메일입니다. email: " + request.email());
         }
         if (memberRepository.existsByPhoneNumber(request.phoneNumber())) {
-            throw new RuntimeException("");
+            throw new DuplicateMemberException("이미 존재하는 전화번호입니다. phoneNumber: " + request.phoneNumber());
         }
     }
 }
