@@ -1,4 +1,4 @@
-package com.example.intern_task.global.entity;
+package com.example.intern_task.common.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;

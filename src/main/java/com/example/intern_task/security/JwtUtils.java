@@ -6,7 +6,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -16,10 +16,10 @@ import java.util.Date;
 @Component
 public class JwtUtils {
 
-    @Value("${app.jwtSecret}")
+    @Value("${app.jwt.Secret}")
     private String jwtSecret;
 
-    @Value("${app.jwtExpirationMs}")
+    @Value("${app.jwt.ExpirationMs}")
     private long jwtExpirationMs;
 
     private static final String BEARER_PREFIX = "Bearer ";

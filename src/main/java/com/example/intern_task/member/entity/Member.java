@@ -1,6 +1,6 @@
 package com.example.intern_task.member.entity;
 
-import com.example.intern_task.global.entity.BaseEntity;
+import com.example.intern_task.common.entity.BaseEntity;
 import com.example.intern_task.member.dto.request.SignUpRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
